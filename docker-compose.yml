@@ -164,7 +164,7 @@ services:
         - SKIP_CLAMD=${SKIP_CLAMD:-n}
         - SKIP_SOGO=${SKIP_SOGO:-n}
         - ALLOW_ADMIN_EMAIL_LOGIN=${ALLOW_ADMIN_EMAIL_LOGIN:-n}
-        - MASTER=${MASTER:-y}
+        - BRANCH=${BRANCH:-main}
         - DEV_MODE=${DEV_MODE:-n}
         - DEMO_MODE=${DEMO_MODE:-n}
         - WEBAUTHN_ONLY_TRUSTED_VENDORS=${WEBAUTHN_ONLY_TRUSTED_VENDORS:-n}
@@ -191,7 +191,7 @@ services:
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
         - SOGO_EXPIRE_SESSION=${SOGO_EXPIRE_SESSION:-480}
         - SKIP_SOGO=${SKIP_SOGO:-n}
-        - MASTER=${MASTER:-y}
+        - BRANCH=${BRANCH:-main}
         - REDIS_SLAVEOF_IP=${REDIS_SLAVEOF_IP:-}
         - REDIS_SLAVEOF_PORT=${REDIS_SLAVEOF_PORT:-}
       dns:
@@ -209,13 +209,13 @@ services:
       labels:
         ofelia.enabled: "true"
         ofelia.job-exec.sogo_sessions.schedule: "@every 1m"
-        ofelia.job-exec.sogo_sessions.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool -v expire-sessions $${SOGO_EXPIRE_SESSION} || exit 0\""
+        ofelia.job-exec.sogo_sessions.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool -v expire-sessions $${SOGO_EXPIRE_SESSION} || exit 0\""
         ofelia.job-exec.sogo_ealarms.schedule: "@every 1m"
-        ofelia.job-exec.sogo_ealarms.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-ealarms-notify -p /etc/sogo/cron.creds || exit 0\""
+        ofelia.job-exec.sogo_ealarms.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-ealarms-notify -p /etc/sogo/cron.creds || exit 0\""
         ofelia.job-exec.sogo_eautoreply.schedule: "@every 5m"
-        ofelia.job-exec.sogo_eautoreply.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool update-autoreply -p /etc/sogo/cron.creds || exit 0\""
+        ofelia.job-exec.sogo_eautoreply.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool update-autoreply -p /etc/sogo/cron.creds || exit 0\""
         ofelia.job-exec.sogo_backup.schedule: "@every 24h"
-        ofelia.job-exec.sogo_backup.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool backup /sogo_backup ALL || exit 0\""
+        ofelia.job-exec.sogo_backup.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool backup /sogo_backup ALL || exit 0\""
       restart: always
       networks:
         mailcow-network:
@@ -263,7 +263,7 @@ services:
         - ACL_ANYONE=${ACL_ANYONE:-disallow}
         - SKIP_SOLR=${SKIP_SOLR:-y}
         - MAILDIR_SUB=${MAILDIR_SUB:-}
-        - MASTER=${MASTER:-y}
+        - BRANCH=${BRANCH:-main}
         - REDIS_SLAVEOF_IP=${REDIS_SLAVEOF_IP:-}
         - REDIS_SLAVEOF_PORT=${REDIS_SLAVEOF_PORT:-}
         - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-mailcow-dockerized}
@@ -281,13 +281,13 @@ services:
         ofelia.enabled: "true"
         ofelia.job-exec.dovecot_imapsync_runner.schedule: "@every 1m"
         ofelia.job-exec.dovecot_imapsync_runner.no-overlap: "true"
-        ofelia.job-exec.dovecot_imapsync_runner.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu nobody /usr/local/bin/imapsync_runner.pl || exit 0\""
+        ofelia.job-exec.dovecot_imapsync_runner.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu nobody /usr/local/bin/imapsync_runner.pl || exit 0\""
         ofelia.job-exec.dovecot_trim_logs.schedule: "@every 1m"
-        ofelia.job-exec.dovecot_trim_logs.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu vmail /usr/local/bin/trim_logs.sh || exit 0\""
+        ofelia.job-exec.dovecot_trim_logs.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu vmail /usr/local/bin/trim_logs.sh || exit 0\""
         ofelia.job-exec.dovecot_quarantine.schedule: "@every 20m"
-        ofelia.job-exec.dovecot_quarantine.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu vmail /usr/local/bin/quarantine_notify.py || exit 0\""
+        ofelia.job-exec.dovecot_quarantine.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu vmail /usr/local/bin/quarantine_notify.py || exit 0\""
         ofelia.job-exec.dovecot_clean_q_aged.schedule: "@every 24h"
-        ofelia.job-exec.dovecot_clean_q_aged.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu vmail /usr/local/bin/clean_q_aged.sh || exit 0\""
+        ofelia.job-exec.dovecot_clean_q_aged.command: "/bin/bash -c \"[[ $${BRANCH} == main ]] && /usr/local/bin/gosu vmail /usr/local/bin/clean_q_aged.sh || exit 0\""
         ofelia.job-exec.dovecot_maildir_gc.schedule: "@every 30m"
         ofelia.job-exec.dovecot_maildir_gc.command: "/bin/bash -c \"source /source_env.sh ; /usr/local/bin/gosu vmail /usr/local/bin/maildir_gc.sh\""
         ofelia.job-exec.dovecot_sarules.schedule: "@every 24h"
